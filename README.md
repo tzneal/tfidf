@@ -2,8 +2,9 @@
 tfidf
 =========
 
-tfidf is a library for calculating term [frequency-inverse
-domain](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) scores across documents.
+tfidf is a library for calculating [term frequency-inverse document
+frequency](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) scores across
+documents.
 
 It differs from some of the other go tfidf libraries in that it uses a store
 plugin for persisting corpuses for score computation.  A sample boltdb store is
