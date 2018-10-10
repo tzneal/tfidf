@@ -11,8 +11,11 @@ type WeightingScheme byte
 
 // WeightingScheme consants.
 const (
+	// WeightingSchemeOne is tf*idf
 	WeightingSchemeOne WeightingScheme = iota
+	// WeightingSchemeTwo is 1+log_10(tf)
 	WeightingSchemeTwo
+	// WeightingSchemeThree is (1+log_10(tf)*idf
 	WeightingSchemeThree
 )
 
