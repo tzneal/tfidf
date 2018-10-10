@@ -4,11 +4,11 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/boltdb/bolt"
+	bbolt "go.etcd.io/bbolt"
 )
 
 type BoltDB struct {
-	db *bolt.DB
+	db *bbolt.DB
 }
 
 var _ DB = (*BoltDB)(nil)
@@ -19,8 +19,8 @@ var (
 	docCountKey    = []byte("documentCount")
 )
 
-func NewBoltDB(db *bolt.DB) (*BoltDB, error) {
-	err := db.Update(func(tx *bolt.Tx) error {
+func NewBoltDB(db *bbolt.DB) (*BoltDB, error) {
+	err := db.Update(func(tx *bbolt.Tx) error {
 		for _, bkt := range [][]byte{metaBucket, documentBucket} {
 			_, err := tx.CreateBucketIfNotExists(bkt)
 			if err != nil {
@@ -41,7 +41,7 @@ func (b *BoltDB) Close() error {
 // TODO: change to uuint32
 func (b *BoltDB) DocumentCount() (uint, error) {
 	var cnt uint
-	err := b.db.View(func(tx *bolt.Tx) error {
+	err := b.db.View(func(tx *bbolt.Tx) error {
 		bkt := tx.Bucket(metaBucket)
 		d := bkt.Get([]byte(docCountKey))
 		if d != nil {
@@ -55,7 +55,7 @@ func (b *BoltDB) DocumentCount() (uint, error) {
 	return cnt, nil
 }
 func (b *BoltDB) AddDocument(counts map[string]uint) error {
-	err := b.db.Update(func(tx *bolt.Tx) error {
+	err := b.db.Update(func(tx *bbolt.Tx) error {
 		meta := tx.Bucket(metaBucket)
 		var cnt uint
 		d := meta.Get(docCountKey)
@@ -85,7 +85,7 @@ func (b *BoltDB) AddDocument(counts map[string]uint) error {
 }
 func (b *BoltDB) TermOccurrences(text string) (uint, error) {
 	var cnt uint
-	err := b.db.View(func(tx *bolt.Tx) error {
+	err := b.db.View(func(tx *bbolt.Tx) error {
 		bkt := tx.Bucket(documentBucket)
 		d := bkt.Get([]byte(text))
 		if d != nil {
