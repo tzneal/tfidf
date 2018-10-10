@@ -35,7 +35,7 @@ func TestWikipediaExampleBolt(t *testing.T) {
 }
 
 // pulled from https://en.wikipedia.org/wiki/Tf%E2%80%93idf
-func testWikipediaExample(t *testing.T, tdb tfidf.DB) {
+func testWikipediaExample(t *testing.T, tdb tfidf.Store) {
 	t.Helper()
 	opts := tfidf.DefaultOptions()
 	// Wikipedia example uses this weighting

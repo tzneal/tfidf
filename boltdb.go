@@ -11,7 +11,7 @@ type BoltDB struct {
 	db *bbolt.DB
 }
 
-var _ DB = (*BoltDB)(nil)
+var _ Store = (*BoltDB)(nil)
 
 var (
 	metaBucket     = []byte("metadata")
