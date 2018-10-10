@@ -12,23 +12,25 @@ provided which should serve for most usee cases.
 Usage
 =====
 
-Constructors are provided so you can use custom ellipsoid parameters, but defaults are
-provided for WGS84:
+As an example, the following loads a few documents into a model and then
+scores a query string against the model.  
 
 ```go
-  	model := tfidf.New(tfidf.NewMemoryDB(), tfidf.DefaultOptions())
-	gettysburg, _ := ioutil.ReadFile("testdata/gettysburg.txt")
-	model.AddDocument(string(gettysburg))
-	model.AddDocument("Another document that is in the corpus")
-	model.AddDocument("One last document that is inside the corpus")
-	query := model.Document("The terms War, Lincoln, and Document are in the Corpus")
-	scored, _ := model.ScoredTerms(query)
-	for _, term := range scored {
-		fmt.Println(term.OriginalTerm, term.Score)
-	}
-	// Output:
-	// lincoln, 0.14362780923945326
-	// war, 0.14362780923945326
-	// corpus 0.05300875094999672
-	// document 0.05300875094999672
+    model := tfidf.New(tfidf.NewMemoryDB(), tfidf.DefaultOptions())
+    gettysburg, _ := ioutil.ReadFile("testdata/gettysburg.txt")
+    model.AddDocument(string(gettysburg))
+    model.AddDocument("Another document that is in the running corpus")
+    model.AddDocument("One last document that is running inside the corpus")
+    query := model.Document("The terms War, Lincoln, running, and Document are in the Corpus")
+    scored, _ := model.ScoredTerms(query)
+    for _, term := range scored {
+        fmt.Println(term.OriginalTerm, term.Score)
+    }
+    // Output:
+    // lincoln, lincoln 0.10584875377494417
+    // war, war 0.10584875377494417
+    // corpus corpu 0.03906562563987277
+    // document document 0.03906562563987277
+    // running, run 0.03906562563987277
+
 ```
