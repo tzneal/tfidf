@@ -27,3 +27,7 @@ func (m *MemoryDB) TermOccurrences(text string) (uint, error) {
 func (m *MemoryDB) DocumentCount() (uint, error) {
 	return m.numDocs, nil
 }
+
+func (m *MemoryDB) Close() error {
+	return nil
+}
