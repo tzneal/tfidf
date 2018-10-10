@@ -68,8 +68,7 @@ func (m *Model) Document(text string) Document {
 // AddDocument adds a document to the corpus, returning the processed document.
 func (m *Model) AddDocument(text string) (Document, error) {
 	doc := m.Document(text)
-	m.db.AddDocument(doc.counts)
-	return doc, nil
+	return doc, m.db.AddDocument(doc.counts)
 }
 
 // IDF returns the inverse document frequency for a given procssed term.

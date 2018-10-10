@@ -6,10 +6,29 @@ import (
 	"testing"
 
 	"github.com/tzneal/tfidf"
+	bbolt "go.etcd.io/bbolt"
 )
 
+func TestWikipediaExampleMem(t *testing.T) {
+	testWikipediaExample(t, tfidf.NewMemoryDB())
+}
+
+func TestWikipediaExampleBolt(t *testing.T) {
+	b, err := bbolt.Open("/tmp/testboltdb", 0666, nil)
+	if err != nil {
+		t.Fatalf("error opening bolt DB: %s", err)
+	}
+	db, err := tfidf.NewBoltDB(b)
+	if err != nil {
+		t.Fatalf("error opening bolt DB: %s", err)
+	}
+	defer db.Close()
+	testWikipediaExample(t, db)
+}
+
 // pulled from https://en.wikipedia.org/wiki/Tf%E2%80%93idf
-func TestWikipediaExample(t *testing.T) {
+func testWikipediaExample(t *testing.T, tdb tfidf.DB) {
+	t.Helper()
 	opts := tfidf.DefaultOptions()
 	// Wikipedia example uses this weighting
 	opts.WeightingScheme = tfidf.WeightingSchemeOne
@@ -18,7 +37,7 @@ func TestWikipediaExample(t *testing.T) {
 	opts.Postprocessors = nil
 	opts.Filters = nil
 
-	db := tfidf.New(tfidf.NewMemoryDB(), opts)
+	db := tfidf.New(tdb, opts)
 	d1, err := db.AddDocument("this is a a sample")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
