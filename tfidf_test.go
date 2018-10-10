@@ -1,6 +1,7 @@
 package tfidf_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"math"
 	"os"
@@ -158,4 +159,22 @@ func benchmarkGettysburg(b *testing.B, pct float64) {
 	for i := 0; i < b.N; i++ {
 		db.AddDocument(gbstring)
 	}
+}
+
+func ExampleModel() {
+	model := tfidf.New(tfidf.NewMemoryDB(), tfidf.DefaultOptions())
+	gettysburg, _ := ioutil.ReadFile("testdata/gettysburg.txt")
+	model.AddDocument(string(gettysburg))
+	model.AddDocument("Another document that is in the corpus")
+	model.AddDocument("One last document that is inside the corpus")
+	query := model.Document("The terms War, Lincoln, and Document are in the Corpus")
+	scored, _ := model.ScoredTerms(query)
+	for _, term := range scored {
+		fmt.Println(term.OriginalTerm, term.Score)
+	}
+	// Output:
+	// lincoln, 0.14362780923945326
+	// war, 0.14362780923945326
+	// corpus 0.05300875094999672
+	// document 0.05300875094999672
 }

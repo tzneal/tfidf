@@ -2,6 +2,7 @@ package tfidf
 
 import (
 	"math"
+	"sort"
 )
 
 // Model is used to compute term frequency/inverse document frequency scores.
@@ -133,5 +134,9 @@ func (m *Model) ScoredTerms(doc Document) ([]ScoredTerm, error) {
 		st.ProcessedTerm = v.ProcessedTerm
 		ret = append(ret, st)
 	}
+	// sort so that the best terms are first
+	sort.Slice(ret, func(a, b int) bool {
+		return ret[a].Score > ret[b].Score
+	})
 	return ret, nil
 }
