@@ -1,17 +1,18 @@
-package tfidf
+package boltdb
 
 import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/tzneal/tfidf"
 	bbolt "go.etcd.io/bbolt"
 )
 
-type BoltDB struct {
+type BoltStore struct {
 	db *bbolt.DB
 }
 
-var _ Store = (*BoltDB)(nil)
+var _ tfidf.Store = (*BoltStore)(nil)
 
 var (
 	metaBucket     = []byte("metadata")
@@ -19,7 +20,7 @@ var (
 	docCountKey    = []byte("documentCount")
 )
 
-func NewBoltDB(db *bbolt.DB) (*BoltDB, error) {
+func NewBoltStore(db *bbolt.DB) (*BoltStore, error) {
 	err := db.Update(func(tx *bbolt.Tx) error {
 		for _, bkt := range [][]byte{metaBucket, documentBucket} {
 			_, err := tx.CreateBucketIfNotExists(bkt)
@@ -32,14 +33,14 @@ func NewBoltDB(db *bbolt.DB) (*BoltDB, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &BoltDB{db}, nil
+	return &BoltStore{db}, nil
 }
 
-func (b *BoltDB) Close() error {
+func (b *BoltStore) Close() error {
 	return b.db.Close()
 }
 
-func (b *BoltDB) DocumentCount() (uint, error) {
+func (b *BoltStore) DocumentCount() (uint, error) {
 	var cnt uint
 	err := b.db.View(func(tx *bbolt.Tx) error {
 		bkt := tx.Bucket(metaBucket)
@@ -55,7 +56,7 @@ func (b *BoltDB) DocumentCount() (uint, error) {
 	}
 	return cnt, nil
 }
-func (b *BoltDB) AddDocument(counts map[string]uint) error {
+func (b *BoltStore) AddDocument(counts map[string]uint) error {
 	err := b.db.Update(func(tx *bbolt.Tx) error {
 		meta := tx.Bucket(metaBucket)
 		var docCount uint
@@ -89,7 +90,7 @@ func (b *BoltDB) AddDocument(counts map[string]uint) error {
 	})
 	return err
 }
-func (b *BoltDB) TermOccurrences(text string) (uint, error) {
+func (b *BoltStore) TermOccurrences(text string) (uint, error) {
 	var cnt uint
 	err := b.db.View(func(tx *bbolt.Tx) error {
 		bkt := tx.Bucket(documentBucket)
