@@ -6,12 +6,12 @@ import (
 
 // Model is used to compute term frequency/inverse document frequency scores.
 type Model struct {
-	db   DB
+	db   Store
 	opts Options
 }
 
 // New creates a new model with a given database and options.
-func New(db DB, opts Options) *Model {
+func New(db Store, opts Options) *Model {
 	if opts.SkipPostprocessing == nil {
 		opts.SkipPostprocessing = func(string) bool { return false }
 	}
