@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/tzneal/tfidf"
+	"github.com/tzneal/tfidf/boltdb"
 	bbolt "go.etcd.io/bbolt"
 )
 
@@ -26,17 +27,17 @@ func TestWikipediaExampleBolt(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error opening bolt DB: %s", err)
 	}
-	db, err := tfidf.NewBoltDB(b)
+	db, err := boltdb.NewBoltStore(b)
 	if err != nil {
 		t.Fatalf("error opening bolt DB: %s", err)
 	}
-	defer db.Close()
 	testWikipediaExample(t, db)
 }
 
 // pulled from https://en.wikipedia.org/wiki/Tf%E2%80%93idf
 func testWikipediaExample(t *testing.T, tdb tfidf.Store) {
 	t.Helper()
+	defer tdb.Close()
 	opts := tfidf.DefaultOptions()
 	// Wikipedia example uses this weighting
 	opts.WeightingScheme = tfidf.WeightingSchemeOne
