@@ -3,6 +3,7 @@ package tfidf_test
 import (
 	"io/ioutil"
 	"math"
+	"os"
 	"testing"
 
 	"github.com/tzneal/tfidf"
@@ -14,7 +15,14 @@ func TestWikipediaExampleMem(t *testing.T) {
 }
 
 func TestWikipediaExampleBolt(t *testing.T) {
-	b, err := bbolt.Open("/tmp/testboltdb", 0666, nil)
+	td, err := ioutil.TempFile("", "bolttest")
+	if err != nil {
+		t.Fatalf("error creating temp dir: %s", err)
+	}
+	td.Close()
+	fn := td.Name()
+	b, err := bbolt.Open(fn, 0666, nil)
+	defer os.Remove(fn)
 	if err != nil {
 		t.Fatalf("error opening bolt DB: %s", err)
 	}
