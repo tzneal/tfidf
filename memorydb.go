@@ -1,17 +1,17 @@
 package tfidf
 
 type MemoryDB struct {
-	numDocs         int
-	termOccurrences map[string]int
+	numDocs         uint
+	termOccurrences map[string]uint
 }
 
 func NewMemoryDB() *MemoryDB {
 	return &MemoryDB{
-		termOccurrences: map[string]int{},
+		termOccurrences: map[string]uint{},
 	}
 }
 
-func (m *MemoryDB) AddDocument(counts map[string]int) error {
+func (m *MemoryDB) AddDocument(counts map[string]uint) error {
 	m.numDocs++
 	for k := range counts {
 		// record that we saw each term
@@ -20,10 +20,10 @@ func (m *MemoryDB) AddDocument(counts map[string]int) error {
 	return nil
 }
 
-func (m *MemoryDB) TermOccurrences(text string) (int, error) {
+func (m *MemoryDB) TermOccurrences(text string) (uint, error) {
 	return m.termOccurrences[text], nil
 }
 
-func (m *MemoryDB) DocumentCount() (int, error) {
+func (m *MemoryDB) DocumentCount() (uint, error) {
 	return m.numDocs, nil
 }

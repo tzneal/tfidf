@@ -4,8 +4,8 @@ import "sort"
 
 // Document contains term frequency statistics for a single document.
 type Document struct {
-	total      int
-	counts     map[string]int
+	total      uint
+	counts     map[string]uint
 	termmap    map[string]string
 	invTermmap map[string]string
 }

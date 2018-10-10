@@ -38,14 +38,14 @@ func (b *BoltDB) Close() error {
 	return b.db.Close()
 }
 
-// TODO: change to uint32
-func (b *BoltDB) DocumentCount() (int, error) {
-	var cnt int
+// TODO: change to uuint32
+func (b *BoltDB) DocumentCount() (uint, error) {
+	var cnt uint
 	err := b.db.View(func(tx *bolt.Tx) error {
 		bkt := tx.Bucket(metaBucket)
 		d := bkt.Get([]byte(docCountKey))
 		if d != nil {
-			cnt = int(binary.BigEndian.Uint32(d))
+			cnt = uint(binary.BigEndian.Uint32(d))
 		}
 		return nil
 	})
@@ -54,13 +54,13 @@ func (b *BoltDB) DocumentCount() (int, error) {
 	}
 	return cnt, nil
 }
-func (b *BoltDB) AddDocument(counts map[string]int) error {
+func (b *BoltDB) AddDocument(counts map[string]uint) error {
 	err := b.db.Update(func(tx *bolt.Tx) error {
 		meta := tx.Bucket(metaBucket)
-		var cnt int
+		var cnt uint
 		d := meta.Get(docCountKey)
 		if d != nil {
-			cnt = int(binary.BigEndian.Uint32(d))
+			cnt = uint(binary.BigEndian.Uint32(d))
 		}
 		cnt++
 		var buf [4]byte
@@ -71,9 +71,9 @@ func (b *BoltDB) AddDocument(counts map[string]int) error {
 		for term := range counts {
 			termKey := []byte(term)
 			d := docs.Get(termKey)
-			var cnt int
+			var cnt uint
 			if d != nil {
-				cnt = int(binary.BigEndian.Uint32(d))
+				cnt = uint(binary.BigEndian.Uint32(d))
 			}
 			cnt++
 			binary.BigEndian.PutUint32(buf[:], uint32(cnt))
@@ -83,13 +83,13 @@ func (b *BoltDB) AddDocument(counts map[string]int) error {
 	})
 	return err
 }
-func (b *BoltDB) TermOccurrences(text string) (int, error) {
-	var cnt int
+func (b *BoltDB) TermOccurrences(text string) (uint, error) {
+	var cnt uint
 	err := b.db.View(func(tx *bolt.Tx) error {
 		bkt := tx.Bucket(documentBucket)
 		d := bkt.Get([]byte(text))
 		if d != nil {
-			cnt = int(binary.BigEndian.Uint32(d))
+			cnt = uint(binary.BigEndian.Uint32(d))
 		}
 		return nil
 	})

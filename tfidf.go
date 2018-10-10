@@ -29,7 +29,7 @@ func (m *Model) Document(text string) Document {
 
 	terms := m.opts.SplitFunc(text)
 	doc := Document{
-		counts:     map[string]int{},
+		counts:     map[string]uint{},
 		termmap:    map[string]string{},
 		invTermmap: map[string]string{},
 	}
@@ -58,7 +58,7 @@ func (m *Model) Document(text string) Document {
 	}
 
 	terms = filtered
-	doc.total = len(terms)
+	doc.total = uint(len(terms))
 	for _, term := range terms {
 		doc.counts[term] = doc.counts[term] + 1
 	}

@@ -1,7 +1,7 @@
 package tfidf
 
 type DB interface {
-	DocumentCount() (int, error)
-	AddDocument(counts map[string]int) error
-	TermOccurrences(text string) (int, error)
+	DocumentCount() (uint, error)
+	AddDocument(counts map[string]uint) error
+	TermOccurrences(text string) (uint, error)
 }
