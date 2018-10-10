@@ -1,3 +1,4 @@
+// Package tfidf provides a method for computing tf-idf scores.
 package tfidf
 
 import (
