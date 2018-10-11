@@ -84,6 +84,7 @@ func DefaultOptions() Options {
 	}
 	o.AddPreprocessor(strings.ToLower)
 	o.AddPreprocessor(strings.TrimSpace)
+	o.AddPreprocessor(ReplaceSmartQuotes)
 	o.AddFilter(MakeRemoveStopwordsFunc(stopwordsEnglish))
 	o.AddPostprocessor(func(term string) string {
 		return strings.Trim(term, ",.!?")
