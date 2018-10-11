@@ -10,6 +10,15 @@ It differs from some of the other go tfidf libraries in that it uses a store
 plugin for persisting corpuses for score computation.  A sample boltdb store is
 provided which should serve for most usee cases.
 
+Features
+========
+
+- Supports persistence (just implement the Store interface, or use the provided
+  bolt implementation)
+- Customizable tokenizing, pre/post processing for word stemming, stop word
+  removal, etc.
+- Supports multiple weighting schemes
+
 Usage
 =====
 
@@ -25,7 +34,7 @@ scores a query string against the model.
     query := model.Document("The terms War, Lincoln, running, and Document are in the Corpus")
     scored, _ := model.ScoredTerms(query)
     for _, term := range scored {
-        fmt.Println(term.OriginalTerm, term.Score)
+        fmt.Println(term.OriginalTerm, term.ProcessedTerm, term.Score)
     }
     // Output:
     // lincoln, lincoln 0.10584875377494417
